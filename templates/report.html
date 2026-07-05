@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SafeHer Report</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    display:flex;
+    background:#fff5f8;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:240px;
+    height:100vh;
+    background:#ffffff;
+    padding:20px;
+    border-right:1px solid #ffe4ec;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    color:#ff4d88;
+    margin-bottom:20px;
+}
+
+.menu a{
+    display:block;
+    padding:12px;
+    margin-bottom:8px;
+    text-decoration:none;
+    color:#555;
+    border-radius:10px;
+}
+
+.menu a:hover,
+.menu a.active{
+    background:#ffe4ec;
+    color:#ff2f7a;
+}
+
+/* LOGOUT */
+.logout{
+    background:linear-gradient(135deg,#ff6fa5,#ff2f7a);
+    color:white;
+    border:none;
+    padding:12px;
+    width:100%;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:30px;
+}
+
+.header h2{
+    color:#333;
+}
+
+.header p{
+    color:#777;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+/* CONTENT */
+.content{
+    display:flex;
+    gap:20px;
+}
+
+/* FORM CARD */
+.form-card{
+    flex:2;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(255,105,150,0.1);
+}
+
+label{
+    font-size:14px;
+    color:#555;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    margin:8px 0 15px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+textarea{
+    height:100px;
+}
+
+/* BUTTON */
+button.submit-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#ff4d88,#ff1f6b);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* RIGHT PANEL */
+.right-panel{
+    flex:1;
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 8px 20px rgba(255,105,150,0.1);
+    overflow-y:auto;
+}
+
+/* REPORT ITEM */
+.report-item{
+    background:#fff5f8;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:10px;
+    border-left:4px solid #ff4d88;
+    font-size:14px;
+}
+
+/* SOS */
+.sos{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    background:linear-gradient(135deg,#ff4d88,#ff1f6b);
+    color:white;
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    border:none;
+    font-size:20px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div>
+        <div class="logo"><i class="fas fa-shield-alt"></i> SafeHer</div>
+
+        <div class="menu">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/map"><i class="fas fa-map"></i> Map</a>
+            <a href="/emergency"><i class="fas fa-phone"></i> Emergency</a>
+            <a href="/routes"><i class="fas fa-route"></i> Routes & Alerts</a>
+            <a href="/report" class="active"><i class="fas fa-exclamation-triangle"></i> Report</a>
+        </div>
+    </div>
+
+    <button class="logout" onclick="location.href='/logout'">Logout</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="header">
+        <h2>Report a Safety Concern</h2>
+        <p>Help make your area safer by reporting issues</p>
+    </div>
+
+    <div class="content">
+
+        <!-- FORM -->
+        <div class="form-card">
+
+            <h3>📝 New Complaint</h3>
+
+            <label>Location</label>
+            <input id="location" type="text">
+
+            <label>Incident Type</label>
+            <select id="type">
+                <option value="">Select incident type</option>
+                <option>Harassment</option>
+                <option>Theft</option>
+                <option>Unsafe Area</option>
+                <option>Other</option>
+            </select>
+
+            <label>Description</label>
+            <textarea id="description"></textarea>
+
+            <button class="submit-btn" onclick="submitReport()">
+                Submit Report
+            </button>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel" id="reportBox">
+            📊 No reports yet
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SOS -->
+<button class="sos" onclick="location.href='/emergency'">SOS</button>
+
+<script>
+let reports = JSON.parse(localStorage.getItem("reports")) || [];
+
+// render reports
+function renderReports(){
+
+    let box = document.getElementById("reportBox");
+
+    if(reports.length === 0){
+        box.innerHTML = "📊 No reports yet";
+        return;
+    }
+
+    box.innerHTML = "";
+
+    reports.forEach(r => {
+        box.innerHTML += `
+            <div class="report-item">
+                <b>${r.type}</b><br>
+                📍 ${r.location}<br>
+                📝 ${r.description}
+            </div>
+        `;
+    });
+}
+
+// submit report
+function submitReport(){
+
+    let location = document.getElementById("location").value;
+    let type = document.getElementById("type").value;
+    let desc = document.getElementById("description").value;
+
+    if(!location || !type || !desc){
+        alert("Please fill all fields");
+        return;
+    }
+
+    let newReport = { location, type, description: desc };
+
+    reports.push(newReport);
+
+    localStorage.setItem("reports", JSON.stringify(reports));
+
+    // clear form
+    document.getElementById("location").value = "";
+    document.getElementById("type").value = "";
+    document.getElementById("description").value = "";
+
+    renderReports();
+}
+
+// load on start
+window.onload = renderReports;
+</script>
+
+</body>
+</html>

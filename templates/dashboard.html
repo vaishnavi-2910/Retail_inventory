@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeHer Dashboard</title>
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    display: flex;
+    background: #fff5f8;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #ffffff;
+    padding: 20px;
+    border-right: 1px solid #ffe4ec;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4d88;
+    margin-bottom: 20px;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #555;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    background: #ffe4ec;
+    color: #ff2f7a;
+}
+
+.menu a.active {
+    background: #ffe4ec;
+    color: #ff2f7a;
+}
+
+/* LOGOUT */
+.logout {
+    background: linear-gradient(135deg, #ff6fa5, #ff2f7a);
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, #ff9bbd, #ff4d88);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.header h2 {
+    font-size: 24px;
+}
+
+.header p {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.header-buttons {
+    margin-top: 15px;
+}
+
+.header-buttons button {
+    margin-right: 10px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-white {
+    background: white;
+    color: #ff2f7a;
+    font-weight: 600;
+}
+
+.btn-light {
+    background: rgba(255,255,255,0.3);
+    color: white;
+}
+
+/* STATS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(255, 105, 150, 0.1);
+}
+
+.stat-box h3 {
+    font-size: 22px;
+    color: #ff2f7a;
+}
+
+.stat-box p {
+    color: #777;
+}
+
+/* ACTIONS */
+.actions {
+    margin-top: 30px;
+}
+
+.actions h3 {
+    margin-bottom: 15px;
+    color: #ff2f7a;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.action-box {
+    background: white;
+    padding: 25px;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(255, 105, 150, 0.1);
+}
+
+.action-box:hover {
+    background: #ffe4ec;
+    transform: translateY(-5px);
+}
+
+.action-box i {
+    font-size: 24px;
+    color: #ff4d88;
+    margin-bottom: 10px;
+}
+
+/* SOS BUTTON */
+.sos {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #ff4d88, #ff1f6b);
+    color: white;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(255, 0, 100, 0.3);
+}
+
+.sos:hover {
+    transform: scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div>
+        <div class="logo"><i class="fas fa-shield-alt"></i> SafeHer</div>
+
+        <div class="menu">
+            <a href="/dashboard" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="/map"><i class="fas fa-map"></i> Map</a>
+            <a href="/emergency"><i class="fas fa-phone"></i> Emergency</a>
+
+            <!-- ✅ FIXED -->
+            <a href="/routes"><i class="fas fa-route"></i> Routes & Alerts</a>
+
+            <a href="/report"><i class="fas fa-exclamation-triangle"></i> Report</a>
+        </div>
+    </div>
+
+    <button class="logout" onclick="location.href='/logout'">Logout</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>Welcome, {{ user }} 💖</h2>
+        <p>Stay safe. Explore secure routes and access help anytime.</p>
+
+        <div class="header-buttons">
+            <button class="btn-white" onclick="location.href='/map'">
+                <i class="fas fa-map-marker-alt"></i> Open Map
+            </button>
+
+            <button class="btn-light" onclick="location.href='/emergency'">
+                <i class="fas fa-phone"></i> Emergency
+            </button>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-box"><h3>340</h3><p>Total Locations</p></div>
+        <div class="stat-box"><h3>75</h3><p>Safe Areas</p></div>
+        <div class="stat-box"><h3>6</h3><p>High Risk</p></div>
+        <div class="stat-box"><h3>4+</h3><p>Emergency</p></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+        <h3>Quick Actions</h3>
+
+        <div class="action-grid">
+
+            <div class="action-box" onclick="location.href='/map'">
+                <i class="fas fa-map-marked-alt"></i>
+                Explore Map
+            </div>
+
+            <div class="action-box" onclick="location.href='/emergency'">
+                <i class="fas fa-phone-alt"></i>
+                Emergency
+            </div>
+
+            <!-- ✅ FIXED -->
+            <div class="action-box" onclick="location.href='/routes'">
+                <i class="fas fa-route"></i>
+                Find Routes
+            </div>
+
+            <div class="action-box" onclick="location.href='/report'">
+                <i class="fas fa-exclamation-circle"></i>
+                Report Issue
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- SOS -->
+<button class="sos" onclick="location.href='/emergency'">
+    <i class="fas fa-bell"></i>
+</button>
+
+</body>
+</html>

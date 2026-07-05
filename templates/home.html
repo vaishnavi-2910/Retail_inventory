@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeHer</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #fff5f8, #ffe4ec);
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 70px;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ff2f7a;
+}
+
+.nav-links a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ff2f7a;
+}
+
+/* HERO */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 80px;
+}
+
+/* TEXT */
+.hero-text h1 {
+    font-size: 48px;
+    color: #ff2f7a;
+}
+
+.hero-text p {
+    margin-top: 15px;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* BUTTONS */
+.buttons {
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff4d88, #ff1f6b);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-light {
+    background: white;
+    color: #ff2f7a;
+    border: 1px solid #ffd1dc;
+}
+
+.btn-light:hover {
+    background: #ffe4ec;
+}
+
+/* WOMAN IMAGE */
+.hero-img img {
+    width: 380px;
+    animation: float 4s ease-in-out infinite;
+}
+
+/* FLOAT ANIMATION */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+    100% { transform: translateY(0); }
+}
+
+/* FEATURES */
+.features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 60px 80px;
+}
+
+.feature {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(255, 100, 150, 0.1);
+    transition: 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-8px);
+}
+
+.feature h3 {
+    color: #ff2f7a;
+    margin-bottom: 8px;
+}
+
+.feature p {
+    color: #777;
+    font-size: 14px;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">SafeHer 💖</div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/signup">Signup</a>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+
+    <!-- TEXT -->
+    <div class="hero-text">
+        <h1>Feel Safe. Walk Confidently 💖</h1>
+
+        <p>
+            SafeHer helps women travel safely with smart routes,
+            real-time alerts, and instant SOS support.
+        </p>
+
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="location.href='/signup'">
+                Get Started
+            </button>
+
+            <button class="btn btn-light" onclick="location.href='/login'">
+                Login
+            </button>
+        </div>
+    </div>
+
+    <!-- 👩 CLEAN WOMAN IMAGE (WORKING) -->
+    <div class="hero-img">
+        <img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png" alt="woman">
+    </div>
+
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+
+    <div class="feature">
+        <h3>🛣 Safe Routes</h3>
+        <p>Choose safer paths based on real data</p>
+    </div>
+
+    <div class="feature">
+        <h3>📍 Nearby Help</h3>
+        <p>Find hospitals & police stations instantly</p>
+    </div>
+
+    <div class="feature">
+        <h3>🚨 SOS Alert</h3>
+        <p>Send emergency alerts with one tap</p>
+    </div>
+
+    <div class="feature">
+        <h3>📊 Safety Score</h3>
+        <p>Check safety levels before traveling</p>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 SafeHer 🌸 | Built for Women's Safety
+</div>
+
+</body>
+</html>

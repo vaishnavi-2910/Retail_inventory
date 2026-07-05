@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SafeHer Routes</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    background: #fff5f8;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    border-right: 1px solid #ffe4ec;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4d88;
+    margin-bottom: 20px;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #555;
+    border-radius: 10px;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: #ffe4ec;
+    color: #ff2f7a;
+}
+
+.logout {
+    background: linear-gradient(135deg,#ff6fa5,#ff2f7a);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* MAIN */
+.main { flex: 1; padding: 20px; }
+
+.header { font-size: 22px; font-weight: bold; }
+
+/* INPUT */
+.route-box {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.route-box input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.route-box button {
+    background: #ff4d88;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* ALERTS */
+.alerts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 5px solid #ff4d88;
+}
+
+.high { border-left-color: red; }
+.medium { border-left-color: orange; }
+
+/* MAP */
+#map {
+    height: 350px;
+    margin-top: 20px;
+    border-radius: 12px;
+}
+
+/* ROUTES */
+.routes { margin-top: 20px; }
+
+.route-item {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* SOS */
+.sos{
+    position:fixed;
+    bottom:25px;
+    right:25px;
+    background:#ff2f7a;
+    color:white;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div>
+        <div class="logo"><i class="fas fa-shield-alt"></i> SafeHer</div>
+
+        <div class="menu">
+            <a href="/dashboard">Home</a>
+            <a href="/map">Map</a>
+            <a href="/emergency">Emergency</a>
+            <a href="/routes" class="active">Routes & Alerts</a>
+            <a href="/report">Report</a>
+        </div>
+    </div>
+
+    <div class="logout" onclick="location.href='/logout'">Logout</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">Routes & Safety Alerts</div>
+
+<div class="route-box">
+    <input id="source" placeholder="Enter Source (e.g. Coimbatore)">
+    <input id="destination" placeholder="Enter Destination (e.g. Pollachi)">
+    <button onclick="findRoutes()">Find Route</button>
+</div>
+
+<div class="alerts">
+    <div class="card high">Ukkadam - High Crime</div>
+    <div class="card medium">Gandhipuram - Medium Risk</div>
+    <div class="card high">Singanallur - High Crime</div>
+</div>
+
+<div id="map"></div>
+
+<div class="routes" id="routes"></div>
+
+</div>
+
+<div class="sos" onclick="location.href='/emergency'">SOS</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+var map = L.map('map').setView([11.0168, 76.9558], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: "© OpenStreetMap"
+}).addTo(map);
+
+let routeLayers = [];
+
+// clear old routes
+function clearRoutes(){
+    routeLayers.forEach(l => map.removeLayer(l));
+    routeLayers = [];
+    document.getElementById("routes").innerHTML = "";
+}
+
+// get coordinates from place
+async function getCoords(place){
+    let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`);
+    let data = await res.json();
+    if(data.length === 0) return null;
+
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+}
+
+// get multiple real routes
+async function getRoutes(a, b){
+
+    let url = `https://router.project-osrm.org/route/v1/driving/` +
+              `${a[1]},${a[0]};${b[1]},${b[0]}?alternatives=true&overview=full&geometries=geojson`;
+
+    let res = await fetch(url);
+    let data = await res.json();
+
+    if(!data.routes) return [];
+
+    return data.routes.map(r =>
+        r.geometry.coordinates.map(c => [c[1], c[0]])
+    );
+}
+
+// safety scoring
+function getSafetyScore(index){
+    if(index === 0) return 95;
+    if(index === 1) return 70;
+    return 50;
+}
+
+async function findRoutes(){
+
+    clearRoutes();
+
+    let source = document.getElementById("source").value;
+    let destination = document.getElementById("destination").value;
+
+    let start = await getCoords(source);
+    let end = await getCoords(destination);
+
+    if(!start || !end){
+        alert("Location not found. Try: Coimbatore, Pollachi, Chennai etc.");
+        return;
+    }
+
+    let routes = await getRoutes(start, end);
+
+    if(routes.length === 0){
+        alert("No route found!");
+        return;
+    }
+
+    let routeData = [];
+
+    routes.forEach((path, i) => {
+        routeData.push({
+            path: path,
+            score: getSafetyScore(i),
+            name: i === 0 ? "Best Safe Route" : "Alternative Route"
+        });
+    });
+
+    // sort safest first
+    routeData.sort((a,b)=>b.score - a.score);
+
+    routeData.forEach((r, i) => {
+
+        let color = i === 0 ? "green" : "orange";
+
+        let line = L.polyline(r.path, {
+            color: color,
+            weight: 5
+        }).addTo(map);
+
+        routeLayers.push(line);
+
+        if(i === 0){
+            map.fitBounds(line.getBounds());
+        }
+
+        document.getElementById("routes").innerHTML += `
+            <div class="route-item">
+                <b>${r.name}</b><br>
+                Safety Score: ${r.score}/100
+            </div>
+        `;
+    });
+}
+</script>
+
+</body>
+</html>

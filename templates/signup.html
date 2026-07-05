@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SafeHer Signup</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- LOTTIE -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #ffe0ef, #fff0f5);
+}
+
+.container {
+  width: 960px;
+  height: 560px;
+  display: flex;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+  background: white;
+}
+
+/* LEFT */
+.left {
+  flex: 1;
+  background: #ffe4ec;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.tagline {
+  margin-top: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff2f7a;
+  line-height: 1.6;
+}
+
+.tagline span {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  font-weight: 400;
+  margin-top: 6px;
+}
+
+/* RIGHT */
+.right {
+  flex: 1;
+  padding: 45px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 42px;
+  font-weight: 700;
+  color: #ff2f7a;
+}
+
+.subtitle {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* FORM */
+form {
+  width: 100%;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #ff4d88;
+  box-shadow: 0 0 6px rgba(255, 77, 136, 0.25);
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff4d88, #ff1f6b);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+.small {
+  margin-top: 12px;
+  font-size: 13px;
+  text-align: center;
+  color: #888;
+}
+
+.small a {
+  color: #ff2f7a;
+  font-weight: 600;
+  text-decoration: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LEFT: WOMAN ANIMATION -->
+  <div class="left">
+
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<lottie-player
+    src="https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"
+    background="transparent"
+    speed="1"
+    style="width:340px; height:340px;"
+    loop
+    autoplay>
+</lottie-player>
+
+    <div class="tagline">
+      “Safety is not something you find —<br>it’s something you build.”
+      <span>Smart protection. Silent strength. Fearless living.</span>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: SIGNUP FORM -->
+  <div class="right">
+
+    <div class="title">Join SafeHer</div>
+
+    <div class="subtitle">
+      Create your personal safety space in seconds.<br>
+      Where confidence meets protection.
+    </div>
+
+    <!-- FORM -->
+    <form method="POST">
+
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+
+      <!-- ✅ NEW FIELD ADDED -->
+      <input type="tel" name="guardian_phone" placeholder="Parent / Trustee Phone Number" pattern="[0-9]{10}" required />
+
+      <input type="password" name="password" placeholder="Create Password" required />
+
+      <button type="submit">Create Account</button>
+
+    </form>
+
+    <div class="small">
+      Already have an account? <a href="/login">Login</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

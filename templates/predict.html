@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="glass-card">
+    <h2>Inventory Data Entry</h2>
+
+    <div class="input-container">
+        <input type="number" id="stock" placeholder="Current Stock Level">
+        <input type="number" id="numMonths" placeholder="No. of Months to Input" oninput="createInputs()">
+    </div>
+
+    <div id="dynamic-grid"></div>
+
+    <button class="btn-predict hidden" id="mainBtn">Predict Now</button>
+
+    <div id="results" class="hidden">
+        <div class="stat-grid">
+            <div class="stat-box">
+                <h4>Next Month Sales</h4>
+                <h2 id="predVal" style="color: #00d4ff;">--</h2>
+            </div>
+
+            <div class="stat-box">
+                <h4>Growth Analysis</h4>
+                <h2 id="growthVal">--</h2>
+            </div>
+
+            <div class="stat-box">
+                <h4>Stock Status</h4>
+                <h2 id="statusVal">--</h2>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; height: 350px;">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+let chart = null;
+
+
+function createInputs() {
+    const n = parseInt(document.getElementById('numMonths').value);
+    const grid = document.getElementById('dynamic-grid');
+    const btn = document.getElementById('mainBtn');
+
+    grid.innerHTML = '';
+
+    if (n > 0 && n < 24) {
+        btn.classList.remove('hidden');
+
+        for (let i = 1; i <= n; i++) {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.className = "sales-data";
+            input.placeholder = "Month " + i + " Sales";
+            grid.appendChild(input);
+        }
+    } else {
+        btn.classList.add('hidden');
+    }
+}
+
+
+document.getElementById("mainBtn").addEventListener("click", runPrediction);
+
+
+async function runPrediction() {
+    try {
+        const stock = document.getElementById('stock').value;
+        const sales = Array.from(document.querySelectorAll('.sales-data')).map(i => i.value);
+
+        const res = await fetch('/analyze', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({stock, sales})
+        });
+
+        if (!res.ok) throw new Error("Server error");
+
+        const data = await res.json();
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.classList.remove('hidden');
+
+        document.getElementById('predVal').innerText = data.prediction;
+        document.getElementById('growthVal').innerText = data.growth + "%";
+
+        const sVal = document.getElementById('statusVal');
+        sVal.innerText = data.status;
+        sVal.style.color = data.color;
+
+        const ctx = document.getElementById('salesChart').getContext('2d');
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Sales Forecast',
+                    data: data.values,
+                    borderColor: '#00d4ff',
+                    backgroundColor: 'rgba(0,212,255,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: { color: "white" }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: "white" }
+                    },
+                    x: {
+                        ticks: { color: "white" }
+                    }
+                }
+            }
+        });
+
+    } catch (err) {
+        alert("Backend error 🚨 Check Flask server");
+        console.error(err);
+    }
+}
+</script>
+
+</body>
+</html>
